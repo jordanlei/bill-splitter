@@ -14,12 +14,10 @@ const addData = (path, data) => {
 };
 
 const updateData = (path, data) => {
-  console.log("updating data at path", path);
   update(ref(db, path), data).catch(console.error);
 };
 
 const removeData = (path) => {
-  console.log("removing data from path", path);
   remove(ref(db, path)).catch(console.error);
 };
 
@@ -340,7 +338,6 @@ const ExpenseCard = ({ params }) => {
           <button
             style={{ position: "absolute", top: "10px", right: "10px" }}
             onClick={() => {
-              console.log("expenseId", params.expenseId);
               removeData(
                 `groups/${params.groupId}/expenses/${params.expenseId}`
               );
@@ -703,8 +700,6 @@ const GroupPage = () => {
     )
     .sort((a, b) => b.timestamp - a.timestamp)
     .map((item) => item.component);
-
-  console.log(transactions);
 
   return (
     <Layout>
