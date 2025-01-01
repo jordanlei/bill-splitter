@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { ref, onValue, push, remove, update, set } from "firebase/database";
+import { ref, onValue, push, remove, update, set, get } from "firebase/database";
 import { db } from "../../firebase";
 import Layout from "../../components/layout";
 import Card from "../../components/card";
@@ -790,5 +790,33 @@ const GroupPage = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps({ params }) {
+  try {
+    // Access the database and fetch the group data
+    const dbRef = ref(db, `groups/${params.id}`); // Reference to the group
+    const snapshot = await get(dbRef); // Use get() instead of once()
+
+    if (!snapshot.exists()) {
+      console.log("I didnt' find this group!")
+      return { notFound: true };  // Handle missing data
+    }
+    
+    const groupData = snapshot.val();  // Extract data
+
+    return {
+      props: {
+        groupData, // Pass the data to the page
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return {
+      props: {
+        groupData: null,  // Handle error gracefully
+      },
+    };
+  }
+}
 
 export default GroupPage;
